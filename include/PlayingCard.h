@@ -1,8 +1,11 @@
 #pragma once
 #include <iostream>
 
-namespace Poker
+namespace Seegrid::Poker
 {
+	const unsigned int MAX_SUITS = 4;
+	const unsigned MAX_RANKS = 13;
+
 	enum class Suit
 	{
 		UNKNOWN,

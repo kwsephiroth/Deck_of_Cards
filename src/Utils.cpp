@@ -1,6 +1,6 @@
 #include "../inc/Utils.h"
 
-namespace Poker
+namespace Seegrid::Poker
 {
 	std::string to_string(const Suit suit)
 	{
