@@ -5,10 +5,10 @@ namespace Seegrid::Poker
 {
 	Deck::Deck()
 	{
-		initialize();
+		populate();
 	}
 
-	void Deck::initialize()//TODO: Should this method be the responsibility of another class or factory method?
+	void Deck::populate()//TODO: Should this method be the responsibility of another class or factory method?
 	{
 		static const Suit suits[MAX_SUITS] = { Suit::SPADES, Suit::DIAMONDS, Suit::CLUBS, Suit::HEARTS };
 		static const Rank ranks[MAX_RANKS] = { Rank::ACE, Rank::TWO, Rank::THREE, Rank::FOUR, Rank::FIVE, Rank::SIX, Rank::SEVEN,

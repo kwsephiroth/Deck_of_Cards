@@ -17,8 +17,6 @@ namespace Seegrid::Poker
 
 		/**
 		* @brief Shuffles the deck.
-		* 
-		* The deck is shuffled using the Fisher-Yates shuffle algorithm.
 		*/
 		void shuffle();
 
@@ -30,12 +28,13 @@ namespace Seegrid::Poker
 	private:
 
 		/**
-		* @brief Initializes deck with 52 playing cards in a standard new deck order.
+		* @brief Populates deck with 52 playing cards in a standard new deck order.
 		* 
+		* Populates an initially empty deck with 52 playing cards.
 		* The card order is based on the new deck order used
 		* in a standard deck of US Playing Card Company (USPCC) cards.
 		*/
-		void initialize();
+		void populate();
 
 		std::deque<PlayingCardPtr> m_deck;
 	};
