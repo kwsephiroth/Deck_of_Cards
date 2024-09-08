@@ -17,6 +17,8 @@ namespace Seegrid::Poker
 
 		/**
 		* @brief Shuffles the deck.
+		* 
+		* The deck is shuffled using the Fisher-Yates shuffle algorithm.
 		*/
 		void shuffle();
 

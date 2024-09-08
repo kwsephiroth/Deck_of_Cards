@@ -41,10 +41,15 @@ namespace Seegrid::Poker
 
 	void Deck::shuffle()
 	{
+		//Use a different seed to ensure differents results
+		//each time this method is called.
+		srand(time(NULL));
+
+		//Implmentation of Fisher-Yates shuffle algorithm.
 		auto n = m_deck.size();
-		for (size_t i = 0; i < n - 1; i++)
+		for (int i = (n - 1); i > 0; --i)
 		{
-			int j = i + rand() % (n - i);
+			int j = rand() % (i + 1);
 			std::swap(m_deck[i], m_deck[j]);
 		}
 	}
