@@ -33,16 +33,30 @@ namespace Seegrid::Poker
 		KING = 13
 	};
 
+	/**
+	* @brief Models a standard playing card in a poker deck.
+	*/
 	struct PlayingCard
 	{
 		Suit m_suit = Suit::UNKNOWN;
 		Rank m_rank = Rank::UNKNOWN;
 
+		/**
+		* @brief Equivalence overloading.
+		* @param Another PlayingCard object.
+		* @return Whether the two PlayingCard objects repesent the same playing card.
+		*/
 		bool operator==(const PlayingCard& rhs) const
 		{
+
 			return (m_rank == rhs.m_rank && m_suit == rhs.m_suit);
 		}
 
+		/**
+		* @brief Inequivalence overloading.
+		* @param Another PlayingCard object.
+		* @return Whether the two PlayingCard objects represent different playing cards.
+		*/
 		bool operator!=(const PlayingCard& rhs) const
 		{
 			return !operator==(rhs);

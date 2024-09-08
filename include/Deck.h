@@ -7,11 +7,16 @@ namespace Seegrid::Poker
 	const unsigned int MAX_DECK_SIZE = MAX_SUITS * MAX_RANKS;
 	using PlayingCardPtr = std::unique_ptr<PlayingCard>;
 
+	/**
+	* @brief Deck class modeling a standard 52-card poker deck.
+	*/
 	class Deck
 	{
 	public:
 		/**
 		* @brief The constructor.
+		* 
+		* Initializes fully populated with 52 cards in a standard new deck order.
 		*/
 		Deck();
 
@@ -36,6 +41,6 @@ namespace Seegrid::Poker
 		*/
 		void populate();
 
-		std::deque<PlayingCardPtr> m_deck;
+		std::deque<PlayingCardPtr> m_deck; /**< The collection of playing cards. */
 	};
 }
