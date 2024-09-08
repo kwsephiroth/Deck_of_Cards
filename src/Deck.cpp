@@ -8,7 +8,7 @@ namespace Seegrid::Poker
 		initialize();
 	}
 
-	void Deck::initialize()
+	void Deck::initialize()//TODO: Should this method be the responsibility of another class or factory method?
 	{
 		static const Suit suits[MAX_SUITS] = { Suit::SPADES, Suit::DIAMONDS, Suit::CLUBS, Suit::HEARTS };
 		static const Rank ranks[MAX_RANKS] = { Rank::ACE, Rank::TWO, Rank::THREE, Rank::FOUR, Rank::FIVE, Rank::SIX, Rank::SEVEN,
@@ -51,13 +51,11 @@ namespace Seegrid::Poker
 
 	PlayingCardPtr Deck::deal_card()
 	{
-		PlayingCardPtr dealt_card = nullptr;
+		if (m_deck.empty())
+			return nullptr;
 
-		if (!m_deck.empty())
-		{
-			dealt_card = std::move(m_deck.front());
-			m_deck.pop_front();
-		}
+		auto dealt_card = std::move(m_deck.front());
+		m_deck.pop_front();
 
 		return dealt_card;
 	}

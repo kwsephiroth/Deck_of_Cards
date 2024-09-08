@@ -1,4 +1,4 @@
-#include "../inc/Utils.h"
+#include "../include/Utils.h"
 
 namespace Seegrid::Poker
 {
