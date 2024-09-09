@@ -10,8 +10,10 @@
 
 namespace Seegrid::Poker
 {
-	Deck::Deck() :
-		m_timesEmptied(0)
+	Deck::Deck(unsigned int maxTimesFullyDrawn) :
+		m_TimesEmptied(0),
+		m_MaxTimesFullyDrawn(maxTimesFullyDrawn),
+		m_IsAvailable(true)
 	{
 		populate();
 	}
@@ -47,7 +49,7 @@ namespace Seegrid::Poker
 			++suit_index;
 		}
 
-		if(m_timesEmptied > 0)
+		if(m_TimesEmptied > 0)
 			std::cout << "Deck repopulated. (thread " << std::this_thread::get_id() << ")\n";
 	}
 
@@ -78,10 +80,17 @@ namespace Seegrid::Poker
 	{
 		static int dealt_card_count = 0;
 		std::unique_lock<std::mutex> locker(m_mutex);
+
+		if (!m_IsAvailable)
+			return nullptr;
+
 		m_cv.wait(locker, [&]() {return !m_deck.empty();});//Only wake if a card can be consumed.
 		
 		if (is_unknown_card(*m_deck.front()))
+		{
+			m_IsAvailable = false;
 			return nullptr;
+		}
 		
 		auto dealtCard = std::move(m_deck.front());
 		m_deck.pop_front();
@@ -90,10 +99,13 @@ namespace Seegrid::Poker
 		
 		if (m_deck.empty())
 		{
-			++m_timesEmptied;
-			std::cout << "\nTimes Deck Fully Drawn: " << m_timesEmptied << "\n";
+			++m_TimesEmptied;
+			std::cout << "\nTimes Deck Fully Drawn: " << m_TimesEmptied << "\n";
 			std::cout << "Total Cards Dealt: " << dealt_card_count << "\n\n";
 			dealt_card_count = 0;
+
+			if (m_TimesEmptied >= m_MaxTimesFullyDrawn)
+				m_IsAvailable = false;
 		}
 
 		return dealtCard;
@@ -103,10 +115,17 @@ namespace Seegrid::Poker
 	{
 		static int dealt_card_count = 0;
 		std::unique_lock<std::mutex> locker(m_mutex);
+
+		if (!m_IsAvailable)
+			return nullptr;
+
 		m_cv.wait(locker, [&]() {return !m_deck.empty(); });//Only wake if a card can be consumed.
 
 		if (is_unknown_card(*m_deck.front()))
+		{
+			m_IsAvailable = false;
 			return nullptr;
+		}
 
 		auto dealtCard = std::move(m_deck.front());
 		m_deck.pop_front();
@@ -115,10 +134,12 @@ namespace Seegrid::Poker
 
 		if (m_deck.empty())
 		{
-			++m_timesEmptied;
-			std::cout << "\nTimes Deck Fully Drawn: " << m_timesEmptied << "\n";
+			++m_TimesEmptied;
+			std::cout << "\nTimes Deck Fully Drawn: " << m_TimesEmptied << "\n";
 			std::cout << "Total Cards Dealt: " << dealt_card_count << "\n\n";
 			dealt_card_count = 0;
+			if (m_TimesEmptied >= m_MaxTimesFullyDrawn)
+				m_IsAvailable = false;
 		}
 
 		return dealtCard;
@@ -126,7 +147,7 @@ namespace Seegrid::Poker
 
 	unsigned int Deck::times_emptied()
 	{
-		return m_timesEmptied;
+		return m_TimesEmptied;
 	}
 
 	void Deck::place_card_on_top(PlayingCardPtr card)
@@ -142,6 +163,12 @@ namespace Seegrid::Poker
 	{
 		std::lock_guard<std::mutex> locker(m_mutex);
 		m_deck.clear();
-		m_timesEmptied = 0;
+		m_TimesEmptied = 0;
+		m_IsAvailable = true;
+	}
+
+	bool Deck::is_available() const
+	{
+		return m_IsAvailable;
 	}
 }

@@ -5,12 +5,14 @@
  * Year:	2024
  */
 #pragma once
-#include "PlayingCard.h"
-#include "Deck.h"
 #include <string>
+#include "../include/PlayingCard.h"
 
 namespace Seegrid::Poker
 {
+	// Forward declaration
+	class Deck;
+
 	/**
 	* @brief Gets string representation of a Suit enumeration value.
 	* @param A Suit enumeration value.
@@ -45,4 +47,10 @@ namespace Seegrid::Poker
 	* @return Whether or not the card is unknown.
 	*/
 	bool is_unknown_card(const PlayingCard& card);
+
+	/**
+	* @brief Adds unknown card to top of a deck
+	* @param A Deck object
+	*/
+	void place_unknown_card_on_top(Deck& deck);
 }

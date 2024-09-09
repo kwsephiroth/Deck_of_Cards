@@ -13,7 +13,7 @@ namespace Seegrid::Poker
 	void Game::start()
 	{
 		std::cout << "Poker Game Started.\n\n";
-		Deck deck;
+		Deck deck(3);//Set max times the deck can be fully drawn to 3.
 
 		//Spawn dealer thread.
 		std::thread dealerThread(&Game::run_dealer_task, this, std::ref(deck), std::chrono::milliseconds(1000));
@@ -29,25 +29,36 @@ namespace Seegrid::Poker
 		dealerThread.join();
 		player1Thread.join();
 		player2Thread.join();
-		std::cout << "Poker Game Ended.\n";
+
+		Deck deck2;
+		deck2.shuffle();
+		for (int i = 0; i <= MAX_DECK_SIZE; ++i)
+		{
+			deck2.deal_card();
+		}
+		deck2.reset();
+		deck2.populate();
+		deck2.shuffle();
+		for (int i = 0; i <= MAX_DECK_SIZE; ++i)
+		{
+			deck2.deal_card();
+		}
 	}
 
 	void Game::run_dealer_task(Deck& deck, std::chrono::milliseconds waitFor)
 	{
 		while (true)
 		{
-			if (deck.times_emptied() >= 3)
+			if (!deck.is_available())
 			{
 				//Add unknown card to deck to signal game over.
-				PlayingCard unknownCard{ .m_suit = Suit::UNKNOWN, .m_rank = Rank::UNKNOWN };
-				deck.place_card_on_top(std::make_unique<PlayingCard>(unknownCard));
+				place_unknown_card_on_top(deck);
 				return;
 			}
 
 			deck.populate();
 			deck.shuffle();
 			std::this_thread::sleep_for(waitFor);
-			
 		}
 	}
 

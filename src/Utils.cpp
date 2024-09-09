@@ -5,6 +5,7 @@
  * Year:	2024
  */
 #include "../include/Utils.h"
+#include "../include/Deck.h"
 
 namespace Seegrid::Poker
 {
@@ -75,5 +76,11 @@ namespace Seegrid::Poker
 	{
 		static PlayingCard unkownCard{ .m_suit = Suit::UNKNOWN, .m_rank = Rank::UNKNOWN };
 		return (card == unkownCard);
+	}
+
+	void place_unknown_card_on_top(Deck& deck)
+	{
+		static PlayingCard unkownCard{ .m_suit = Suit::UNKNOWN, .m_rank = Rank::UNKNOWN };
+		deck.place_card_on_top(std::make_unique<PlayingCard>(unkownCard));
 	}
 }

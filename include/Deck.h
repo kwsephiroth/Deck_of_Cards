@@ -30,8 +30,10 @@ namespace Seegrid::Poker
 		* @brief The constructor.
 		* 
 		* Initializes fully populated with 52 cards in a standard new deck order.
+		* 
+		* @param How many times the deck can be fully drawn (emptied).
 		*/
-		Deck();
+		Deck(unsigned int maxTimesFullyDrawn = 1);
 
 		/**
 		* @brief Populates deck with 52 playing cards in a standard new deck order.
@@ -73,13 +75,21 @@ namespace Seegrid::Poker
 		void place_card_on_top(PlayingCardPtr card);
 
 		/**
-		* @brief Clears deck and resets times drawn state.
+		* @brief Clears deck and resets times fully drawn state.
 		*/
 		void reset();
+
+		/**
+		* @brief Returns whether or not the deck is available for use based on max times fully drawn.
+		* @return Whether or not the deck is available for use.
+		*/
+		bool is_available() const;
 	private:
 		std::deque<PlayingCardPtr> m_deck; /**< The collection of playing cards. */
 		std::mutex m_mutex; /**< The mutex for synchronizing access to the deck. */
 		std::condition_variable m_cv; /**< The condition variable for synchronizing access to the deck.*/
-		std::atomic<unsigned int> m_timesEmptied; /**< How many times the deck has been emptied.*/
+		std::atomic<unsigned int> m_TimesEmptied; /**< How many times the deck has been emptied.*/
+		unsigned int m_MaxTimesFullyDrawn;/**< The max amount of times the deck can be fully drawn.*/
+		std::atomic<bool> m_IsAvailable;/**< Is the deck available for use.*/
 	};
 }
