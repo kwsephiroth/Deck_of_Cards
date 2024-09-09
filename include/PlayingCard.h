@@ -44,7 +44,7 @@ namespace Seegrid::Poker
 		/**
 		* @brief Equivalence overloading.
 		* @param Another PlayingCard object.
-		* @return Whether the two PlayingCard objects repesent the same playing card.
+		* @return Whether or not the two PlayingCard objects repesent the same playing card.
 		*/
 		bool operator==(const PlayingCard& rhs) const
 		{
@@ -55,7 +55,7 @@ namespace Seegrid::Poker
 		/**
 		* @brief Inequivalence overloading.
 		* @param Another PlayingCard object.
-		* @return Whether the two PlayingCard objects represent different playing cards.
+		* @return Whether or not the two PlayingCard objects represent different playing cards.
 		*/
 		bool operator!=(const PlayingCard& rhs) const
 		{

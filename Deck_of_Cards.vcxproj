@@ -144,11 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Deck.h" />
+    <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\PlayingCard.h" />
     <ClInclude Include="include\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Deck.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>

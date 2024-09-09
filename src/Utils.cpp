@@ -64,4 +64,10 @@ namespace Seegrid::Poker
 		os << to_string(card);
         return os;
     }
+
+	bool is_unknown_card(const PlayingCard& card)
+	{
+		static PlayingCard unkownCard{ .m_suit = Suit::UNKNOWN, .m_rank = Rank::UNKNOWN };
+		return (card == unkownCard);
+	}
 }

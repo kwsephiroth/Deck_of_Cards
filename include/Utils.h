@@ -32,4 +32,11 @@ namespace Seegrid::Poker
 	* @return Output stream object storing string representation of the PlayingCard object.
 	*/
 	std::ostream& operator<<(std::ostream& os, const PlayingCard& card);
+
+	/**
+	* @brief Determines if a card object represents an unknown card.
+	* @param A PlayingCard object.
+	* @return Whether or not the card is unknown.
+	*/
+	bool is_unknown_card(const PlayingCard& card);
 }
