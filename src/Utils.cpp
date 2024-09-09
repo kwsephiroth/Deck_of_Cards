@@ -1,3 +1,9 @@
+/**
+ * @file	Utils.cpp
+ * Author:  Kenneth Walker
+ * Contact: kwalkerdev@gmail.com
+ * Year:	2024
+ */
 #include "../include/Utils.h"
 
 namespace Seegrid::Poker

@@ -1,3 +1,10 @@
+/**
+ * @file	Deck.h
+ * Author:  Kenneth Walker
+ * Contact: kwalkerdev@gmail.com
+ * Year:	2024
+ */
+
 #pragma once
 #include "PlayingCard.h"
 #include "Utils.h"
@@ -47,6 +54,13 @@ namespace Seegrid::Poker
 		PlayingCardPtr deal_card();
 
 		/**
+		* @brief Deals a single card from the top of the deck.
+		* @param Id of player to whom the card is dealt.
+		* @return A single card object from the deck.
+		*/
+		PlayingCardPtr deal_card(const std::string& playerId);
+
+		/**
 		* @brief Returns counter indicating how many times the deck has been fully drawn.
 		* @return Fully drawn count.
 		*/
@@ -58,6 +72,10 @@ namespace Seegrid::Poker
 		*/
 		void place_card_on_top(PlayingCardPtr card);
 
+		/**
+		* @brief Clears deck and resets times drawn state.
+		*/
+		void reset();
 	private:
 		std::deque<PlayingCardPtr> m_deck; /**< The collection of playing cards. */
 		std::mutex m_mutex; /**< The mutex for synchronizing access to the deck. */

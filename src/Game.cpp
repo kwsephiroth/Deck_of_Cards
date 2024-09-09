@@ -1,3 +1,9 @@
+/**
+ * @file	Game.cpp
+ * Author:  Kenneth Walker
+ * Contact: kwalkerdev@gmail.com
+ * Year:	2024
+ */
 #include "../include/Game.h"
 #include <vector>
 #include <cassert>
@@ -10,16 +16,15 @@ namespace Seegrid::Poker
 		Deck deck;
 
 		//Spawn dealer thread.
-		std::thread dealerThread(&Game::run_dealer_task, this, std::ref(deck));
-		//assert(dealerThread.joinable());
+		std::thread dealerThread(&Game::run_dealer_task, this, std::ref(deck), std::chrono::milliseconds(1000));
 
 		// Delay before starting player threads to make sure the dealer 
 		// has time to shuffle the deck for the first time.
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 
 		//Spawn player threads.
-		std::thread player1Thread(&Game::run_player_task, this, std::ref(deck));
-		std::thread player2Thread(&Game::run_player_task, this, std::ref(deck));
+		std::thread player1Thread(&Game::run_player_task, this, std::ref(deck), std::chrono::milliseconds(100), "Player 1");
+		std::thread player2Thread(&Game::run_player_task, this, std::ref(deck), std::chrono::milliseconds(100), "Player 2");
 
 		dealerThread.join();
 		player1Thread.join();
@@ -27,7 +32,7 @@ namespace Seegrid::Poker
 		std::cout << "Poker Game Ended.\n";
 	}
 
-	void Game::run_dealer_task(Deck& deck)
+	void Game::run_dealer_task(Deck& deck, std::chrono::milliseconds waitFor)
 	{
 		while (true)
 		{
@@ -41,13 +46,28 @@ namespace Seegrid::Poker
 
 			deck.populate();
 			deck.shuffle();
+			std::this_thread::sleep_for(waitFor);
+			
 		}
 	}
 
-	void Game::run_player_task(Deck& deck)
+	void Game::run_player_task(Deck& deck, std::chrono::milliseconds waitFor, const std::string& playerId)
 	{
-		while (deck.deal_card())
+		int handSize = 0;
+		while (true)
 		{
+			auto dealt_card = deck.deal_card(playerId);
+			if (!dealt_card)
+				break;
+
+			++handSize;
+			if (handSize >= 5)
+			{
+				std::this_thread::sleep_for(waitFor);
+				srand(time(NULL));
+				int randNum = (rand() % 5 + 1);
+				handSize -= randNum; //play random amount of cards from 5-card hand
+			}
 		}
 	}
 }

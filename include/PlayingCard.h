@@ -1,3 +1,9 @@
+/**
+ * @file	PlayingCard.h
+ * Author:  Kenneth Walker
+ * Contact: kwalkerdev@gmail.com
+ * Year:	2024
+ */
 #pragma once
 #include <iostream>
 

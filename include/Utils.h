@@ -1,3 +1,9 @@
+/**
+ * @file	Utils.h
+ * Author:  Kenneth Walker
+ * Contact: kwalkerdev@gmail.com
+ * Year:	2024
+ */
 #pragma once
 #include "PlayingCard.h"
 #include "Deck.h"

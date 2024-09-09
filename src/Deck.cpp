@@ -1,3 +1,9 @@
+/**
+ * @file	Deck.cpp
+ * Author:  Kenneth Walker
+ * Contact: kwalkerdev@gmail.com
+ * Year:	2024
+ */
 #include "../include/Deck.h"
 #include <ranges>
 #include <iostream>
@@ -40,8 +46,9 @@ namespace Seegrid::Poker
 			}
 			++suit_index;
 		}
-		locker.unlock();
-		m_cv.notify_all();//Notify consumer threads that cards are available for consumption.
+
+		if(m_timesEmptied > 0)
+			std::cout << "Deck repopulated. (thread " << std::this_thread::get_id() << ")\n";
 	}
 
 	void Deck::shuffle()
@@ -52,12 +59,19 @@ namespace Seegrid::Poker
 
 		//Implmentation of Fisher-Yates shuffle algorithm.
 		std::unique_lock<std::mutex> locker(m_mutex);
+		
+		if (m_deck.size() < 2)
+			return;
+
 		auto n = m_deck.size();
 		for (int i = (n - 1); i > 0; --i)
 		{
 			int j = rand() % (i + 1);
 			std::swap(m_deck[i], m_deck[j]);
 		}
+		std::cout << "Deck shuffled. (thread " << std::this_thread::get_id() << ")\n";
+		locker.unlock();
+		m_cv.notify_all();//Notify consumer threads that cards are available for consumption.
 	}
 
 	PlayingCardPtr Deck::deal_card()
@@ -66,21 +80,39 @@ namespace Seegrid::Poker
 		std::unique_lock<std::mutex> locker(m_mutex);
 		m_cv.wait(locker, [&]() {return !m_deck.empty();});//Only wake if a card can be consumed.
 		
-		//std::cout << "Deck contents before dealing: \n";
-		/*for (const auto& card : m_deck)
-		{
-			std::cout << *card << "\n";
-		}
-		std::cout << "\n\n";*/
-		
 		if (is_unknown_card(*m_deck.front()))
 			return nullptr;
 		
 		auto dealtCard = std::move(m_deck.front());
 		m_deck.pop_front();
 		++dealt_card_count;
-        std::cout << "Dealt " << *dealtCard << "\n";
+        std::cout << "Dealt " << *dealtCard << " (thread " << std::this_thread::get_id() << ")\n";
 		
+		if (m_deck.empty())
+		{
+			++m_timesEmptied;
+			std::cout << "\nTimes Deck Fully Drawn: " << m_timesEmptied << "\n";
+			std::cout << "Total Cards Dealt: " << dealt_card_count << "\n\n";
+			dealt_card_count = 0;
+		}
+
+		return dealtCard;
+	}
+
+	PlayingCardPtr Deck::deal_card(const std::string& playerId)
+	{
+		static int dealt_card_count = 0;
+		std::unique_lock<std::mutex> locker(m_mutex);
+		m_cv.wait(locker, [&]() {return !m_deck.empty(); });//Only wake if a card can be consumed.
+
+		if (is_unknown_card(*m_deck.front()))
+			return nullptr;
+
+		auto dealtCard = std::move(m_deck.front());
+		m_deck.pop_front();
+		++dealt_card_count;
+		std::cout << "Dealt " << *dealtCard << " to " << playerId << " (thread " << std::this_thread::get_id() <<")\n";
+
 		if (m_deck.empty())
 		{
 			++m_timesEmptied;
@@ -104,5 +136,12 @@ namespace Seegrid::Poker
 			return;
 		m_deck.push_front(std::move(card));
 		m_cv.notify_all();
+	}
+
+	void Deck::reset()
+	{
+		std::lock_guard<std::mutex> locker(m_mutex);
+		m_deck.clear();
+		m_timesEmptied = 0;
 	}
 }
