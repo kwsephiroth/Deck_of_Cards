@@ -11,7 +11,7 @@
 namespace Seegrid::Poker
 {
 	Deck::Deck(unsigned int maxTimesFullyDrawn) :
-		m_TimesEmptied(0),
+		m_TimesFullyDrawn(0),
 		m_MaxTimesFullyDrawn(maxTimesFullyDrawn),
 		m_IsAvailable(true)
 	{
@@ -49,7 +49,7 @@ namespace Seegrid::Poker
 			++suit_index;
 		}
 
-		if(m_TimesEmptied > 0)
+		if(m_TimesFullyDrawn > 0)
 			std::cout << "Deck repopulated. (thread " << std::this_thread::get_id() << ")\n";
 	}
 
@@ -61,11 +61,10 @@ namespace Seegrid::Poker
 
 		//Implmentation of Fisher-Yates shuffle algorithm.
 		std::unique_lock<std::mutex> locker(m_mutex);
-		
-		if (m_deck.size() < 2)
+		auto n = m_deck.size();
+		if (n < 2)
 			return;
 
-		auto n = m_deck.size();
 		for (int i = (n - 1); i > 0; --i)
 		{
 			int j = rand() % (i + 1);
@@ -99,12 +98,12 @@ namespace Seegrid::Poker
 		
 		if (m_deck.empty())
 		{
-			++m_TimesEmptied;
-			std::cout << "\nTimes Deck Fully Drawn: " << m_TimesEmptied << "\n";
+			++m_TimesFullyDrawn;
+			std::cout << "\nTimes Deck Fully Drawn: " << m_TimesFullyDrawn << "\n";
 			std::cout << "Total Cards Dealt: " << dealt_card_count << "\n\n";
 			dealt_card_count = 0;
 
-			if (m_TimesEmptied >= m_MaxTimesFullyDrawn)
+			if (m_TimesFullyDrawn >= m_MaxTimesFullyDrawn)
 				m_IsAvailable = false;
 		}
 
@@ -134,20 +133,20 @@ namespace Seegrid::Poker
 
 		if (m_deck.empty())
 		{
-			++m_TimesEmptied;
-			std::cout << "\nTimes Deck Fully Drawn: " << m_TimesEmptied << "\n";
+			++m_TimesFullyDrawn;
+			std::cout << "\nTimes Deck Fully Drawn: " << m_TimesFullyDrawn << "\n";
 			std::cout << "Total Cards Dealt: " << dealt_card_count << "\n\n";
 			dealt_card_count = 0;
-			if (m_TimesEmptied >= m_MaxTimesFullyDrawn)
+			if (m_TimesFullyDrawn >= m_MaxTimesFullyDrawn)
 				m_IsAvailable = false;
 		}
 
 		return dealtCard;
 	}
 
-	unsigned int Deck::times_emptied()
+	unsigned int Deck::times_fully_drawn()
 	{
-		return m_TimesEmptied;
+		return m_TimesFullyDrawn;
 	}
 
 	void Deck::place_card_on_top(PlayingCardPtr card)
@@ -163,7 +162,7 @@ namespace Seegrid::Poker
 	{
 		std::lock_guard<std::mutex> locker(m_mutex);
 		m_deck.clear();
-		m_TimesEmptied = 0;
+		m_TimesFullyDrawn = 0;
 		m_IsAvailable = true;
 	}
 

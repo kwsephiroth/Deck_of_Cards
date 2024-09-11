@@ -66,7 +66,7 @@ namespace Seegrid::Poker
 		* @brief Returns counter indicating how many times the deck has been fully drawn.
 		* @return Fully drawn count.
 		*/
-		unsigned int times_emptied();
+		unsigned int times_fully_drawn();
 
 		/**
 		* @brief Places card on top (front) of deck.
@@ -88,7 +88,7 @@ namespace Seegrid::Poker
 		std::deque<PlayingCardPtr> m_deck; /**< The collection of playing cards. */
 		std::mutex m_mutex; /**< The mutex for synchronizing access to the deck. */
 		std::condition_variable m_cv; /**< The condition variable for synchronizing access to the deck.*/
-		std::atomic<unsigned int> m_TimesEmptied; /**< How many times the deck has been emptied.*/
+		std::atomic<unsigned int> m_TimesFullyDrawn; /**< How many times the deck has been emptied.*/
 		unsigned int m_MaxTimesFullyDrawn;/**< The max amount of times the deck can be fully drawn.*/
 		std::atomic<bool> m_IsAvailable;/**< Is the deck available for use.*/
 	};
